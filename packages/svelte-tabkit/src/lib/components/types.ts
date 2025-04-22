@@ -76,8 +76,6 @@ export interface TabsContentProps extends HTMLDivAttributes {
 }
 
 export interface TabsIndicatorProps extends HTMLDivAttributes {
-	children: Snippet;
-
 	/**
 	 * The rendered element.
 	 */

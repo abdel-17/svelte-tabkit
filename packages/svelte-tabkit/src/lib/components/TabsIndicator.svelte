@@ -5,9 +5,7 @@
 
 	const { api } = getTabsContext();
 
-	let { children, ref = $bindable(null), ...rest }: TabsIndicatorProps = $props();
+	let { ref = $bindable(null), ...rest }: TabsIndicatorProps = $props();
 </script>
 
-<div bind:this={ref} {...mergeProps(api().getIndicatorProps(), rest)}>
-	{@render children()}
-</div>
+<div bind:this={ref} {...mergeProps(api().getIndicatorProps(), rest)}></div>
