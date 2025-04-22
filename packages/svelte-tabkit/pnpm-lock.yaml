@@ -6,7 +6,7 @@ settings:
 
 importers:
 
-  packages/svelte-tabkit:
+  .:
     devDependencies:
       '@sveltejs/kit':
         specifier: ^2.16.0
