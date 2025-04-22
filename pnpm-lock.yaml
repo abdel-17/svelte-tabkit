@@ -7,6 +7,16 @@ settings:
 importers:
 
   packages/svelte-tabkit:
+    dependencies:
+      '@zag-js/svelte':
+        specifier: ^1.11.0
+        version: 1.11.0(svelte@5.28.2)
+      '@zag-js/tabs':
+        specifier: ^1.11.0
+        version: 1.11.0
+      esm-env:
+        specifier: ^1.2.2
+        version: 1.2.2
     devDependencies:
       '@sveltejs/kit':
         specifier: ^2.16.0
@@ -362,6 +372,29 @@ packages:
   '@types/estree@1.0.7':
     resolution: {integrity: sha512-w28IoSUCJpidD/TGviZwwMJckNESJZXFu7NBZ5YJ4mEUnNraUn9Pm8HSZm/jDF1pDWYKspWE7oVphigUPRakIQ==}
 
+  '@zag-js/anatomy@1.11.0':
+    resolution: {integrity: sha512-F7fhQ0XhfjYcEete39PlI533t+lJaZwj8/1tlXvFkJQF26hxNbruYrdGwq4W0onhytMFAIV9/jTePzrO09/+FA==}
+
+  '@zag-js/core@1.11.0':
+    resolution: {integrity: sha512-ziOap7d/VJte+quc+cjrCQlJ92W7+eJ3eICfmt7KzQx5kQV7T6KcD0AJQwpT9EaBFeW5gJlLQcscyJFO3vq2eQ==}
+
+  '@zag-js/dom-query@1.11.0':
+    resolution: {integrity: sha512-S8EVSktfD2AhRjnm9UBv6ESE+NuSy+2ytiIdhmUmqSWs6hgeSjH5X1+3dZEpGD42u/Zmc2VJgdODbSCp7KeZSQ==}
+
+  '@zag-js/svelte@1.11.0':
+    resolution: {integrity: sha512-VbTRoNmZvq5TqzPU21odDgF+sebRLJ0hnAfTbjE1+BDWRHcJMNjJiKki+NvfNM1SvVOiAt4PGVoP9bBTmmxClQ==}
+    peerDependencies:
+      svelte: ^5.0.0-next.1
+
+  '@zag-js/tabs@1.11.0':
+    resolution: {integrity: sha512-KciX1yrFP2mDJ9YikG3C5lwZ9YvAd5t2jlHb6LrLI7oTBTf03C+U3F2DZC4YFgZpuXqTju56ih3ug2T0liINUw==}
+
+  '@zag-js/types@1.11.0':
+    resolution: {integrity: sha512-ovlrKX3/by7MqNiITF0XcLvitsUFKQbRAhztanWMShPsBG3ii0cQViY97fGKamXEpWcFvX2AxipP1umiPQ755A==}
+
+  '@zag-js/utils@1.11.0':
+    resolution: {integrity: sha512-XgT01GHOBC284fGeub+p4TKr4TZVaVLeypVy126IfFDpQ7ZmZ4I3vkgyyHg9RzG4O25Y5SmchEB9BuEWHz7gzg==}
+
   acorn@8.14.1:
     resolution: {integrity: sha512-OvQ/2pUDKmgfCg++xsTX1wGxfTaszcHVcTctW4UJB4hibJx2HXxxO5UmVgyjMa+ZDsiaf5wWLXYpRWMmBI0QHg==}
     engines: {node: '>=0.4.0'}
@@ -386,6 +419,9 @@ packages:
   cookie@0.6.0:
     resolution: {integrity: sha512-U71cyTamuh1CRNCfpGY6to28lxvNwPG4Guz/EVjgf3Jmzv0vlDp1atT9eS5dDjMYHucpHbWns6Lwf3BKz6svdw==}
     engines: {node: '>= 0.6'}
+
+  csstype@3.1.3:
+    resolution: {integrity: sha512-M1uQkMl8rQK/szD0LNhtqxIPLpimGm8sOBwU7lLnCpSbTyY3yeU1Vc7l4KT5zT4s/yOxHH5O7tIuuLOCnLADRw==}
 
   debug@4.4.0:
     resolution: {integrity: sha512-6WTZ/IxCY/T6BALoZHaE4ctp9xm+Z5kY/pzYaCHRFeyVhojxlrm+46y68HA6hr0TcwEssoxNiDEUJQjfPZ/RYA==}
@@ -836,6 +872,38 @@ snapshots:
 
   '@types/estree@1.0.7': {}
 
+  '@zag-js/anatomy@1.11.0': {}
+
+  '@zag-js/core@1.11.0':
+    dependencies:
+      '@zag-js/dom-query': 1.11.0
+      '@zag-js/utils': 1.11.0
+
+  '@zag-js/dom-query@1.11.0':
+    dependencies:
+      '@zag-js/types': 1.11.0
+
+  '@zag-js/svelte@1.11.0(svelte@5.28.2)':
+    dependencies:
+      '@zag-js/core': 1.11.0
+      '@zag-js/types': 1.11.0
+      '@zag-js/utils': 1.11.0
+      svelte: 5.28.2
+
+  '@zag-js/tabs@1.11.0':
+    dependencies:
+      '@zag-js/anatomy': 1.11.0
+      '@zag-js/core': 1.11.0
+      '@zag-js/dom-query': 1.11.0
+      '@zag-js/types': 1.11.0
+      '@zag-js/utils': 1.11.0
+
+  '@zag-js/types@1.11.0':
+    dependencies:
+      csstype: 3.1.3
+
+  '@zag-js/utils@1.11.0': {}
+
   acorn@8.14.1: {}
 
   aria-query@5.3.2: {}
@@ -849,6 +917,8 @@ snapshots:
   clsx@2.1.1: {}
 
   cookie@0.6.0: {}
+
+  csstype@3.1.3: {}
 
   debug@4.4.0:
     dependencies:
