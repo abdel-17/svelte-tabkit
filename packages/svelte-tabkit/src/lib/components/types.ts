@@ -82,35 +82,8 @@ export interface TabsIndicatorProps extends HTMLDivAttributes {
 	ref?: HTMLDivElement | null;
 }
 
-export type TabsListTab = {
-	/**
-	 * A unique value identifying each tab.
-	 */
-	id: string;
-
-	/**
-	 * Whether or not the tab is disabled.
-	 */
-	disabled?: boolean;
-};
-
-export type TabsListTabProps<TTab extends TabsListTab = TabsListTab> = {
-	tab: TTab;
-};
-
-export interface TabsListProps<TTab extends TabsListTab = TabsListTab>
-	extends Omit<HTMLDivAttributes, "children"> {
-	tab: Snippet<[props: TabsListTabProps<TTab>]>;
-
-	/**
-	 * A list of shown tabs.
-	 */
-	tabs: Array<TTab>;
-
-	/**
-	 * A callback that is called when the list of shown tabs changes.
-	 */
-	onTabsChange?: (value: Array<TTab>) => void;
+export interface TabsListProps extends Omit<HTMLDivAttributes, "children"> {
+	children: Snippet;
 
 	/**
 	 * The duration of the flip animation in milliseconds.

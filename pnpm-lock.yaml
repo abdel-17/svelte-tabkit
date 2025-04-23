@@ -19,9 +19,6 @@ importers:
       esm-env:
         specifier: ^1.2.2
         version: 1.2.2
-      svelte-dnd-action:
-        specifier: ^0.9.60
-        version: 0.9.60(svelte@5.28.2)
     devDependencies:
       '@sveltejs/kit':
         specifier: ^2.16.0
@@ -851,11 +848,6 @@ packages:
       svelte: ^4.0.0 || ^5.0.0-next.0
       typescript: '>=5.0.0'
 
-  svelte-dnd-action@0.9.60:
-    resolution: {integrity: sha512-PTz9RlJiSTNXo0mIUGPmYXRMcqzLG/ghr79YqLrsOrq0dM4gQhXn97AkuImTalNuIxl/tohFK3uQPsEML+ZKeQ==}
-    peerDependencies:
-      svelte: '>=3.23.0 || ^5.0.0-next.0'
-
   svelte2tsx@0.7.36:
     resolution: {integrity: sha512-nBlERuCZRwmpebC8m0vDqZ9oaKsqW8frQS2l3zwFQW1voQIkItYtHxh1F5OTZEmE0meDIH6cxU36eIOQVOxlCw==}
     peerDependencies:
@@ -1509,10 +1501,6 @@ snapshots:
       typescript: 5.8.3
     transitivePeerDependencies:
       - picomatch
-
-  svelte-dnd-action@0.9.60(svelte@5.28.2):
-    dependencies:
-      svelte: 5.28.2
 
   svelte2tsx@0.7.36(svelte@5.28.2)(typescript@5.8.3):
     dependencies:
