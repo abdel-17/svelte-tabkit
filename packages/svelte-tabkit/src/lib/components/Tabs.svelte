@@ -24,9 +24,9 @@
 	let {
 		children,
 		loopFocus = true,
-		value = $bindable(),
+		selected = $bindable(),
+		onSelectedChange,
 		onFocusChange,
-		onValueChange,
 		orientation = "horizontal",
 		activationMode = "automatic",
 		dir = "ltr",
@@ -38,14 +38,12 @@
 	const service = useMachine(tabs.machine, () => ({
 		id,
 		loopFocus,
-		value,
-		onFocusChange: (details) => {
-			onFocusChange?.(details.focusedValue);
-		},
+		value: selected,
 		onValueChange: (details) => {
-			value = details.value;
-			onValueChange?.(value);
+			selected = details.value;
+			onSelectedChange?.(selected);
 		},
+		onFocusChange: (details) => onFocusChange?.(details.focusedValue),
 		orientation,
 		activationMode,
 		dir,
@@ -58,6 +56,6 @@
 	setContext(CONTEXT_KEY, context);
 </script>
 
-<div bind:this={ref} {...mergeProps(api.getRootProps(), rest)}>
+<div {...mergeProps(api.getRootProps(), rest)} bind:this={ref}>
 	{@render children()}
 </div>

@@ -34,7 +34,8 @@
 	"dependencies": {
 		"@zag-js/svelte": "^1.11.0",
 		"@zag-js/tabs": "^1.11.0",
-		"esm-env": "^1.2.2"
+		"esm-env": "^1.2.2",
+		"svelte-dnd-action": "^0.9.60"
 	},
 	"devDependencies": {
 		"@sveltejs/kit": "^2.16.0",

@@ -14,14 +14,14 @@ export interface TabsProps extends HTMLDivAttributes {
 	loopFocus?: boolean;
 
 	/**
-	 * The selected tab value.
+	 * The id of the selected value.
 	 */
-	value?: string;
+	selected?: string;
 
 	/**
 	 * A callback that is called when the selected tab changes.
 	 */
-	onValueChange?: (value: string) => void;
+	onSelectedChange?: (value: string) => void;
 
 	/**
 	 * A callback that is called when the focused tab changes.
@@ -65,9 +65,9 @@ export interface TabsContentProps extends HTMLDivAttributes {
 	children: Snippet;
 
 	/**
-	 * The selected tab value.
+	 * The id of the shown tab.
 	 */
-	value: string;
+	tabId: string;
 
 	/**
 	 * The rendered element.
@@ -82,8 +82,42 @@ export interface TabsIndicatorProps extends HTMLDivAttributes {
 	ref?: HTMLDivElement | null;
 }
 
-export interface TabsListProps extends HTMLDivAttributes {
-	children: Snippet;
+export type TabsListTab = {
+	/**
+	 * A unique value identifying each tab.
+	 */
+	id: string;
+
+	/**
+	 * Whether or not the tab is disabled.
+	 */
+	disabled?: boolean;
+};
+
+export type TabsListTabProps<TTab extends TabsListTab = TabsListTab> = {
+	tab: TTab;
+};
+
+export interface TabsListProps<TTab extends TabsListTab = TabsListTab>
+	extends Omit<HTMLDivAttributes, "children"> {
+	tab: Snippet<[props: TabsListTabProps<TTab>]>;
+
+	/**
+	 * A list of shown tabs.
+	 */
+	tabs: Array<TTab>;
+
+	/**
+	 * A callback that is called when the list of shown tabs changes.
+	 */
+	onTabsChange?: (value: Array<TTab>) => void;
+
+	/**
+	 * The duration of the flip animation in milliseconds.
+	 *
+	 * @default 200
+	 */
+	flipDuration?: number;
 
 	/**
 	 * The rendered element.
@@ -95,9 +129,9 @@ export interface TabsTriggerProps extends HTMLButtonAttributes {
 	children: Snippet;
 
 	/**
-	 * The selected tab value.
+	 * The id of the triggered tab.
 	 */
-	value: string;
+	tabId: string;
 
 	/**
 	 * Whether or not the trigger is disabled.

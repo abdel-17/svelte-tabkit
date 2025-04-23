@@ -1,36 +1,36 @@
 <script lang="ts">
-	import { Tabs, TabsContent, TabsList, TabsTrigger } from "svelte-tabkit";
+	import { Tabs, TabsContent, TabsList } from "svelte-tabkit";
+
+	let tabs = $state([
+		{
+			id: "1",
+			title: "Tab 1",
+		},
+		{
+			id: "2",
+			title: "Tab 2",
+		},
+		{
+			id: "3",
+			title: "Tab 3",
+		},
+	]);
 </script>
 
 <main class="p-8">
-	<Tabs value="tab1">
-		<TabsList>
-			<TabsTrigger
-				value="tab1"
-				class="rounded-t-lg bg-gray-200 px-3 py-1.5 text-sm font-medium data-selected:text-blue-700"
-			>
-				Tab 1
-			</TabsTrigger>
-
-			<TabsTrigger
-				value="tab2"
-				class="rounded-t-lg bg-gray-200 px-3 py-1.5 text-sm font-medium data-selected:text-blue-700"
-			>
-				Tab 2
-			</TabsTrigger>
-
-			<TabsTrigger
-				value="tab3"
-				class="rounded-t-lg bg-gray-200 px-3 py-1.5 text-sm font-medium data-selected:text-blue-700"
-			>
-				Tab 3
-			</TabsTrigger>
+	<Tabs selected={tabs[0].id}>
+		<TabsList bind:tabs class="flex items-center gap-2">
+			{#snippet tab({ tab })}
+				<div
+					class="rounded-t-lg bg-gray-200 px-3 py-1.5 text-sm font-medium data-selected:text-blue-700"
+				>
+					{tab.title}
+				</div>
+			{/snippet}
 		</TabsList>
 
-		<TabsContent value="tab1" class="mt-2">Content for Tab 1</TabsContent>
-
-		<TabsContent value="tab2" class="mt-2">Content for Tab 2</TabsContent>
-
-		<TabsContent value="tab3" class="mt-2">Content for Tab 3</TabsContent>
+		{#each tabs as tab, i (tab.id)}
+			<TabsContent tabId={tab.id} class="mt-2">Content for Tab {i + 1}</TabsContent>
+		{/each}
 	</Tabs>
 </main>

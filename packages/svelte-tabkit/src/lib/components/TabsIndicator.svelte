@@ -8,4 +8,4 @@
 	let { ref = $bindable(null), ...rest }: TabsIndicatorProps = $props();
 </script>
 
-<div bind:this={ref} {...mergeProps(api().getIndicatorProps(), rest)}></div>
+<div {...mergeProps(api().getIndicatorProps(), rest)} bind:this={ref}></div>
