@@ -7,7 +7,9 @@
 
 	export type TabsContext = {
 		api: () => tabs.Api;
+		value: () => string | undefined;
 		onSwapTabs: (i: number, j: number) => void;
+		onCloseTab: (i: number) => void;
 	};
 
 	const CONTEXT_KEY = Symbol("Tabs");
@@ -24,10 +26,11 @@
 <script lang="ts">
 	let {
 		children,
+		onSwapTabs,
+		onCloseTab,
 		value = $bindable(),
 		onValueChange,
 		onFocusChange,
-		onSwapTabs,
 		loopFocus = true,
 		orientation = "horizontal",
 		activationMode = "automatic",
@@ -54,7 +57,9 @@
 
 	const context: TabsContext = {
 		api: () => api,
-		onSwapTabs: (i, j) => onSwapTabs?.(i, j),
+		value: () => value,
+		onSwapTabs: (i, j) => onSwapTabs(i, j),
+		onCloseTab: (i) => onCloseTab(i),
 	};
 	setContext(CONTEXT_KEY, context);
 

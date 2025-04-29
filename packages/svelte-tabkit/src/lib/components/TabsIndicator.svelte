@@ -3,11 +3,11 @@
 	import { getTabsContext } from "./Tabs.svelte";
 	import type { TabsIndicatorProps } from "./types.js";
 
-	const { api } = getTabsContext();
+	const tabs = getTabsContext();
 
 	let { ref = $bindable(null), ...rest }: TabsIndicatorProps = $props();
 
-	const indicatorProps = $derived(api().getIndicatorProps());
+	const indicatorProps = $derived(tabs.api().getIndicatorProps());
 </script>
 
 <div {...mergeProps(indicatorProps, rest)} bind:this={ref}></div>

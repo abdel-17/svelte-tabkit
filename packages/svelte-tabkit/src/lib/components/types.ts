@@ -1,6 +1,6 @@
 import type { HTMLDivAttributes } from "$lib/internal/types.js";
 import type { Snippet } from "svelte";
-import type { ClassValue } from "svelte/elements";
+import type { ClassValue, HTMLButtonAttributes } from "svelte/elements";
 
 export type TabsOrientation = "horizontal" | "vertical";
 
@@ -10,6 +10,19 @@ export type TabsDir = "ltr" | "rtl";
 
 export interface TabsProps extends HTMLDivAttributes {
 	children: Snippet;
+
+	/**
+	 * A callback that is called when two adjacent tabs are swapped.
+	 * @param i - The index of the first tab.
+	 * @param j - The index of the second tab.
+	 */
+	onSwapTabs: (i: number, j: number) => void;
+
+	/**
+	 * A callback that is called when a tab is closed.
+	 * @param i - The index of the closed tab.
+	 */
+	onCloseTab: (i: number) => void;
 
 	/**
 	 * The selected tab value.
@@ -25,13 +38,6 @@ export interface TabsProps extends HTMLDivAttributes {
 	 * A callback that is called when the focused tab changes.
 	 */
 	onFocusChange?: (value: string) => void;
-
-	/**
-	 * A callback that is called when two adjacent tabs are swapped.
-	 * @param i - The index of the first tab.
-	 * @param j - The index of the second tab.
-	 */
-	onSwapTabs?: (i: number, j: number) => void;
 
 	/**
 	 * Whether the keyboard navigation will loop from last tab to first,
@@ -144,4 +150,13 @@ export interface TabsTriggerProps extends Omit<HTMLDivAttributes, "children" | "
 	 * A function may be provided to compute the style based on component state.
 	 */
 	style?: string | ((state: TabsTriggerState) => string | undefined);
+}
+
+export interface TabsTriggerCloseProps extends HTMLButtonAttributes {
+	children: Snippet;
+
+	/**
+	 * The rendered element.
+	 */
+	ref?: HTMLButtonElement | null;
 }
