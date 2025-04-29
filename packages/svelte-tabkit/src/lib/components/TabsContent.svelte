@@ -5,9 +5,11 @@
 
 	const { api } = getTabsContext();
 
-	let { children, tabId, ref = $bindable(null), ...rest }: TabsContentProps = $props();
+	let { children, value, ref = $bindable(null), ...rest }: TabsContentProps = $props();
+
+	const contentProps = $derived(api().getContentProps({ value }));
 </script>
 
-<div {...mergeProps(api().getContentProps({ value: tabId }), rest)} bind:this={ref}>
+<div {...mergeProps(contentProps, rest)} bind:this={ref}>
 	{@render children()}
 </div>

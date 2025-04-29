@@ -1,12 +1,13 @@
 <script lang="ts" module>
-	import * as tabs from "@zag-js/tabs";
 	import { mergeProps, normalizeProps, useMachine } from "@zag-js/svelte";
+	import * as tabs from "@zag-js/tabs";
 	import { DEV } from "esm-env";
 	import { getContext, hasContext, setContext } from "svelte";
 	import type { TabsProps } from "./types.js";
 
 	export type TabsContext = {
 		api: () => tabs.Api;
+		onSwapTabs: (i: number, j: number) => void;
 	};
 
 	const CONTEXT_KEY = Symbol("Tabs");
@@ -23,10 +24,11 @@
 <script lang="ts">
 	let {
 		children,
-		loopFocus = true,
-		selected = $bindable(),
-		onSelectedChange,
+		value = $bindable(),
+		onValueChange,
 		onFocusChange,
+		onSwapTabs,
+		loopFocus = true,
 		orientation = "horizontal",
 		activationMode = "automatic",
 		dir = "ltr",
@@ -38,10 +40,10 @@
 	const service = useMachine(tabs.machine, () => ({
 		id,
 		loopFocus,
-		value: selected,
+		value,
 		onValueChange: (details) => {
-			selected = details.value;
-			onSelectedChange?.(selected);
+			value = details.value;
+			onValueChange?.(value);
 		},
 		onFocusChange: (details) => onFocusChange?.(details.focusedValue),
 		orientation,
@@ -52,10 +54,13 @@
 
 	const context: TabsContext = {
 		api: () => api,
+		onSwapTabs: (i, j) => onSwapTabs?.(i, j),
 	};
 	setContext(CONTEXT_KEY, context);
+
+	const rootProps = $derived(api.getRootProps());
 </script>
 
-<div {...mergeProps(api.getRootProps(), rest)} bind:this={ref}>
+<div {...mergeProps(rootProps, rest)} bind:this={ref}>
 	{@render children()}
 </div>

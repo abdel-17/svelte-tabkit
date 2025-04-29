@@ -6,6 +6,8 @@
 	const { api } = getTabsContext();
 
 	let { ref = $bindable(null), ...rest }: TabsIndicatorProps = $props();
+
+	const indicatorProps = $derived(api().getIndicatorProps());
 </script>
 
-<div {...mergeProps(api().getIndicatorProps(), rest)} bind:this={ref}></div>
+<div {...mergeProps(indicatorProps, rest)} bind:this={ref}></div>
