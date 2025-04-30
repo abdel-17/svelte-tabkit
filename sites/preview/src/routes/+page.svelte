@@ -24,7 +24,7 @@
 				<TabsTrigger
 					value={tab}
 					class={({ dragged }) => [
-						"flex items-center rounded-[inherit] px-2 py-2 ps-3 text-sm font-medium data-selected:bg-gray-100",
+						"flex items-center rounded-[inherit] px-2 py-2 ps-3 text-sm font-medium focus-visible:outline-2 focus-visible:outline-current data-selected:bg-gray-100",
 						{
 							"opacity-0": dragged,
 						},
@@ -44,7 +44,7 @@
 		{#each tabs as tab (tab)}
 			<TabsContent
 				value={tab}
-				class="rounded-lg rounded-t-none border border-t-0 border-gray-300 p-4"
+				class="rounded-lg rounded-t-none border border-t-0 border-gray-300 p-4 focus-visible:outline-2 focus-visible:outline-current"
 			>
 				Content for {tab}
 			</TabsContent>
