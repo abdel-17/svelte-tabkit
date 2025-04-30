@@ -1,14 +1,10 @@
 <script lang="ts">
 	import { mergeProps } from "@zag-js/svelte";
 	import type { EventHandler } from "svelte/elements";
-	import { getTabsTriggerContext } from "./TabsTrigger.svelte";
 	import type { TabsTriggerInputProps } from "./types.js";
-
-	const tabsTrigger = getTabsTriggerContext();
 
 	let {
 		ref,
-		canConfirm,
 		onConfirm,
 		onCancel,
 		value = $bindable(""),
@@ -21,12 +17,7 @@
 
 		switch (event.key) {
 			case "Enter": {
-				const { value } = event.currentTarget;
-				if (!canConfirm?.(value)) {
-					return;
-				}
-
-				onConfirm?.(value);
+				onConfirm?.(event.currentTarget.value);
 				break;
 			}
 			case "Escape": {
@@ -39,7 +30,6 @@
 		}
 
 		event.preventDefault();
-		tabsTrigger.ref()!.focus();
 	};
 
 	const onblur: EventHandler<FocusEvent, HTMLInputElement> = (event) => {

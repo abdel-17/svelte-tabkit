@@ -169,14 +169,6 @@ export interface TabsTriggerCloseProps extends HTMLButtonAttributes {
 
 export interface TabsTriggerInputProps extends Omit<HTMLInputAttributes, "children"> {
 	/**
-	 * A callback that is called before the user confirms renaming the tab.
-	 *
-	 * @param value - The current value of the input.
-	 * @return true if the value is valid, false otherwise.
-	 */
-	canConfirm?: (value: string) => boolean;
-
-	/**
 	 * A callback that is called when the user confirms renaming the tab.
 	 *
 	 * @param value - The current value of the input.

@@ -12,6 +12,7 @@
 	class Tab {
 		readonly id = crypto.randomUUID();
 		name = $state.raw("");
+		ref: HTMLDivElement | null = $state.raw(null);
 
 		constructor(name: string) {
 			this.name = name;
@@ -41,12 +42,13 @@
 		renamedId = tabs[i].id;
 	}
 
-	function canConfirmRename(value: string): boolean {
-		return value.length !== 0;
-	}
-
 	function onConfirmRename(tab: Tab, value: string): void {
+		if (value.length === 0) {
+			return;
+		}
+
 		tab.name = value;
+		tab.ref!.focus();
 		renamedId = undefined;
 	}
 
@@ -60,6 +62,7 @@
 		<TabsList class="flex items-center gap-1 rounded-t-lg border border-gray-300 bg-gray-300">
 			{#each tabs as tab (tab.id)}
 				<TabsTrigger
+					bind:ref={tab.ref}
 					value={tab.id}
 					class={({ dragged }) => [
 						"flex min-w-30 items-center justify-between gap-2 rounded-[inherit] px-3 py-2 text-sm font-medium focus-visible:outline-2 focus-visible:outline-current data-selected:bg-gray-100",
@@ -71,7 +74,6 @@
 					{#if tab.id === renamedId}
 						<TabsTriggerInput
 							value={tab.name}
-							canConfirm={canConfirmRename}
 							onConfirm={(value) => onConfirmRename(tab, value)}
 							onCancel={onCancelRename}
 						/>
