@@ -12,17 +12,19 @@ export interface TabsProps extends HTMLDivAttributes {
 	children: Snippet;
 
 	/**
-	 * The selected tab value.
+	 * The value of the selected tab.
 	 */
 	value?: string;
 
 	/**
 	 * A callback that is called when the selected tab changes.
+	 * @param value - The value of the selected tab.
 	 */
 	onValueChange?: (value: string) => void;
 
 	/**
 	 * A callback that is called when the focused tab changes.
+	 * @param value - The value of the focused tab.
 	 */
 	onFocusChange?: (value: string) => void;
 
@@ -41,7 +43,7 @@ export interface TabsProps extends HTMLDivAttributes {
 
 	/**
 	 * A callback that is called when a tab is renamed.
-	 * @param i - The index of the tab.
+	 * @param i - The index of the renamed tab.
 	 */
 	onRenameTab?: (i: number) => void;
 
@@ -170,14 +172,12 @@ export interface TabsTriggerCloseProps extends HTMLButtonAttributes {
 export interface TabsTriggerInputProps extends Omit<HTMLInputAttributes, "children"> {
 	/**
 	 * A callback that is called when the user confirms renaming the tab.
-	 *
 	 * @param value - The current value of the input.
 	 */
 	onConfirm?: (value: string) => void;
 
 	/**
 	 * A callback that is called when the user cancels renaming the tab.
-	 *
 	 * @param value - The current value of the input.
 	 */
 	onCancel?: (value: string) => void;

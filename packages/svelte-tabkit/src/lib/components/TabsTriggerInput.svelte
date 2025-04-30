@@ -4,9 +4,9 @@
 	import type { TabsTriggerInputProps } from "./types.js";
 
 	let {
-		ref,
 		onConfirm,
 		onCancel,
+		ref,
 		value = $bindable(""),
 		...rest
 	}: TabsTriggerInputProps = $props();

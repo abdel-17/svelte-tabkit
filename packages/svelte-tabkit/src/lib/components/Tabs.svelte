@@ -46,13 +46,13 @@
 	const id = $props.id();
 	const service = useMachine(tabs.machine, () => ({
 		id,
-		loopFocus,
 		value,
 		onValueChange: (details) => {
 			value = details.value;
 			onValueChange?.(value);
 		},
 		onFocusChange: (details) => onFocusChange?.(details.focusedValue),
+		loopFocus,
 		orientation,
 		activationMode,
 		dir,
