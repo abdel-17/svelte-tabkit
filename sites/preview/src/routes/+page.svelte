@@ -19,24 +19,26 @@
 
 <main class="p-8">
 	<Tabs {onSwapTabs} {onCloseTab} bind:value>
-		<TabsList class="flex items-center rounded-t-lg border border-gray-300 bg-gray-300">
+		<TabsList class="flex items-center gap-1 rounded-t-lg border border-gray-300 bg-gray-300">
 			{#each tabs as tab (tab)}
 				<TabsTrigger
 					value={tab}
 					class={({ dragged }) => [
-						"flex items-center gap-3 rounded-t-[inherit] px-2 py-2 ps-3 text-sm font-medium data-selected:bg-gray-100",
+						"flex items-center rounded-[inherit] px-2 py-2 ps-3 text-sm font-medium data-selected:bg-gray-100",
 						{
-							"!bg-gray-500 !text-transparent": dragged,
+							"opacity-0": dragged,
 						},
 					]}
 				>
 					<span>{tab}</span>
-					<TabsTriggerClose class="p-0.5">
+					<TabsTriggerClose class="ms-3 rounded-full p-0.25 hover:bg-current/8">
 						<span class="sr-only">Close</span>
 						<XIcon size={16} />
 					</TabsTriggerClose>
 				</TabsTrigger>
 			{/each}
+
+			<div class="my-1 w-px self-stretch rounded-full bg-slate-400"></div>
 		</TabsList>
 
 		{#each tabs as tab (tab)}
