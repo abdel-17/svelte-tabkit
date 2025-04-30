@@ -14,6 +14,6 @@
 	};
 </script>
 
-<button {...mergeProps(rest, { onclick })} {tabindex} bind:this={ref}>
+<button {...mergeProps(rest, { onclick })} bind:this={ref} {tabindex}>
 	{@render children()}
 </button>

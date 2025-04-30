@@ -58,7 +58,7 @@
 </script>
 
 <main class="p-8">
-	<Tabs {onSwapTabs} {onCloseTab} {onRenameTab} bind:value={selectedId}>
+	<Tabs bind:value={selectedId} {onSwapTabs} {onCloseTab} {onRenameTab}>
 		<TabsList class="flex items-center gap-1 rounded-t-lg border border-gray-300 bg-gray-300">
 			{#each tabs as tab (tab.id)}
 				<TabsTrigger
