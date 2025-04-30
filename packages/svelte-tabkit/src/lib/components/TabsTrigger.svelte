@@ -188,8 +188,9 @@
 			onDragStart: () => {
 				triggerState.dragged = true;
 			},
-			onDrop: () => {
+			onDrop: ({ source }) => {
 				triggerState.dragged = false;
+				source.element.focus();
 			},
 		});
 	});
