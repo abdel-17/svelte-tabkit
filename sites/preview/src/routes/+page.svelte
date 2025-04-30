@@ -41,6 +41,10 @@
 		renamedId = tabs[i].id;
 	}
 
+	function canConfirmRename(value: string): boolean {
+		return value.length !== 0;
+	}
+
 	function onConfirmRename(tab: Tab, value: string): void {
 		tab.name = value;
 		renamedId = undefined;
@@ -67,12 +71,12 @@
 					{#if tab.id === renamedId}
 						<TabsTriggerInput
 							value={tab.name}
-							required
+							canConfirm={canConfirmRename}
 							onConfirm={(value) => onConfirmRename(tab, value)}
 							onCancel={onCancelRename}
 						/>
 					{:else}
-						<div>{tab.name}</div>
+						<span>{tab.name}</span>
 						<TabsTriggerClose class="rounded-full p-0.25 hover:bg-current/8">
 							<span class="sr-only">Close</span>
 							<XIcon size={16} />

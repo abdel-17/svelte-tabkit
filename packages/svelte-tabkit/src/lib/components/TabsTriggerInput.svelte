@@ -8,6 +8,7 @@
 
 	let {
 		ref,
+		canConfirm,
 		onConfirm,
 		onCancel,
 		value = $bindable(""),
@@ -20,7 +21,12 @@
 
 		switch (event.key) {
 			case "Enter": {
-				onConfirm?.(event.currentTarget.value);
+				const { value } = event.currentTarget;
+				if (!canConfirm?.(value)) {
+					return;
+				}
+
+				onConfirm?.(value);
 				break;
 			}
 			case "Escape": {
