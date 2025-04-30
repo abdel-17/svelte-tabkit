@@ -13,6 +13,7 @@
 	import type { TabsTriggerProps, TabsTriggerState } from "./types.js";
 
 	export type TabsTriggerContext = {
+		ref: () => HTMLElement | null;
 		close: () => void;
 	};
 
@@ -64,6 +65,7 @@
 	}
 
 	const context: TabsTriggerContext = {
+		ref: () => ref,
 		close,
 	};
 	setContext(CONTEXT_KEY, context);
@@ -150,12 +152,33 @@
 				tick().then(() => ref?.focus());
 				break;
 			}
+			case "F2": {
+				const triggers = tabsList.getTriggers();
+				const index = triggers.indexOf(ref!);
+				if (index === -1) {
+					return;
+				}
+
+				tabs.onRenameTab(index);
+				break;
+			}
 			default: {
 				return;
 			}
 		}
 
 		event.preventDefault();
+	};
+
+	const ondblclick: EventHandler<MouseEvent, HTMLDivElement> = (event) => {
+		const triggers = tabsList.getTriggers();
+		const index = triggers.indexOf(ref!);
+		if (index === -1) {
+			return;
+		}
+
+		event.preventDefault();
+		tabs.onRenameTab(index);
 	};
 
 	$effect(() => {
@@ -217,6 +240,7 @@
 		class: className,
 		style,
 		onkeydown,
+		ondblclick,
 	})}
 	bind:this={ref}
 >

@@ -12,6 +12,7 @@
 		orientation: () => TabsOrientation;
 		onSwapTabs: (i: number, j: number) => void;
 		onCloseTab: (i: number) => void;
+		onRenameTab: (i: number) => void;
 	};
 
 	const CONTEXT_KEY = Symbol("Tabs");
@@ -28,11 +29,12 @@
 <script lang="ts">
 	let {
 		children,
-		onSwapTabs,
-		onCloseTab,
 		value = $bindable(),
 		onValueChange,
 		onFocusChange,
+		onSwapTabs,
+		onCloseTab,
+		onRenameTab,
 		loopFocus = true,
 		orientation = "horizontal",
 		activationMode = "automatic",
@@ -62,8 +64,9 @@
 		value: () => value,
 		loopFocus: () => loopFocus,
 		orientation: () => orientation,
-		onSwapTabs: (i, j) => onSwapTabs(i, j),
-		onCloseTab: (i) => onCloseTab(i),
+		onSwapTabs: (i, j) => onSwapTabs?.(i, j),
+		onCloseTab: (i) => onCloseTab?.(i),
+		onRenameTab: (i) => onRenameTab?.(i),
 	};
 	setContext(CONTEXT_KEY, context);
 

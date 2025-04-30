@@ -1,6 +1,6 @@
 import type { HTMLDivAttributes } from "$lib/internal/types.js";
 import type { Snippet } from "svelte";
-import type { ClassValue, HTMLButtonAttributes } from "svelte/elements";
+import type { ClassValue, HTMLButtonAttributes, HTMLInputAttributes } from "svelte/elements";
 
 export type TabsOrientation = "horizontal" | "vertical";
 
@@ -10,19 +10,6 @@ export type TabsDir = "ltr" | "rtl";
 
 export interface TabsProps extends HTMLDivAttributes {
 	children: Snippet;
-
-	/**
-	 * A callback that is called when two adjacent tabs are swapped.
-	 * @param i - The index of the first tab.
-	 * @param j - The index of the second tab.
-	 */
-	onSwapTabs: (i: number, j: number) => void;
-
-	/**
-	 * A callback that is called when a tab is closed.
-	 * @param i - The index of the closed tab.
-	 */
-	onCloseTab: (i: number) => void;
 
 	/**
 	 * The selected tab value.
@@ -38,6 +25,25 @@ export interface TabsProps extends HTMLDivAttributes {
 	 * A callback that is called when the focused tab changes.
 	 */
 	onFocusChange?: (value: string) => void;
+
+	/**
+	 * A callback that is called when two adjacent tabs are swapped.
+	 * @param i - The index of the first tab.
+	 * @param j - The index of the second tab.
+	 */
+	onSwapTabs?: (i: number, j: number) => void;
+
+	/**
+	 * A callback that is called when a tab is closed.
+	 * @param i - The index of the closed tab.
+	 */
+	onCloseTab?: (i: number) => void;
+
+	/**
+	 * A callback that is called when a tab is renamed.
+	 * @param i - The index of the tab.
+	 */
+	onRenameTab?: (i: number) => void;
 
 	/**
 	 * Whether the keyboard navigation will loop from last tab to first,
@@ -101,7 +107,7 @@ export interface TabsIndicatorProps extends HTMLDivAttributes {
 	ref?: HTMLDivElement | null;
 }
 
-export interface TabsListProps extends Omit<HTMLDivAttributes, "children"> {
+export interface TabsListProps extends HTMLDivAttributes {
 	children: Snippet;
 
 	/**
@@ -159,4 +165,25 @@ export interface TabsTriggerCloseProps extends HTMLButtonAttributes {
 	 * The rendered element.
 	 */
 	ref?: HTMLButtonElement | null;
+}
+
+export interface TabsTriggerInputProps extends Omit<HTMLInputAttributes, "children"> {
+	/**
+	 * A callback that is called when the user confirms renaming the tab.
+	 *
+	 * @param value - The current value of the input.
+	 */
+	onConfirm?: (value: string) => void;
+
+	/**
+	 * A callback that is called when the user cancels renaming the tab.
+	 *
+	 * @param value - The current value of the input.
+	 */
+	onCancel?: (value: string) => void;
+
+	/**
+	 * The rendered element.
+	 */
+	ref?: HTMLInputElement | null;
 }
