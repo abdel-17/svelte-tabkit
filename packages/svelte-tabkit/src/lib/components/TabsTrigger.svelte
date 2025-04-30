@@ -9,8 +9,7 @@
 	import type { EventHandler } from "svelte/elements";
 	import { getTabsContext } from "./Tabs.svelte";
 	import { getTabsListContext } from "./TabsList.svelte";
-	import { dropTrigger, getTriggers, TriggerStateImpl } from "./state.svelte.js";
-	import type { TabsTriggerProps } from "./types.js";
+	import type { TabsTriggerProps, TabsTriggerState } from "./types.js";
 
 	export type TabsTriggerContext = {
 		close: () => void;
@@ -24,6 +23,10 @@
 		}
 
 		return getContext(CONTEXT_KEY);
+	}
+
+	class TabsTriggerStateImpl implements TabsTriggerState {
+		dragged = $state.raw(false);
 	}
 </script>
 
@@ -42,7 +45,7 @@
 	}: TabsTriggerProps = $props();
 
 	function close() {
-		const triggers = getTriggers(tabsList.ref()!);
+		const triggers = tabsList.getTriggers();
 		const index = triggers.indexOf(ref!);
 		if (index === -1) {
 			return;
@@ -66,7 +69,7 @@
 
 	const triggerProps = $derived(tabs.api().getTriggerProps({ value, disabled }));
 
-	const triggerState = new TriggerStateImpl();
+	const triggerState = new TabsTriggerStateImpl();
 
 	const className = $derived(
 		typeof classNameProp === "function" ? classNameProp(triggerState) : classNameProp,
@@ -104,7 +107,41 @@
 	$effect(() => {
 		return dropTargetForElements({
 			element: ref!,
-			onDragEnter: (payload) => dropTrigger(payload, tabsList.ref()!, tabs.onSwapTabs),
+			onDragEnter: (payload) => {
+				const location = payload.location.current;
+				if (location.dropTargets.length === 0) {
+					return;
+				}
+
+				const source = payload.source;
+				const target = location.dropTargets[0];
+
+				const triggers = tabsList.getTriggers();
+				const startIndex = triggers.indexOf(source.element);
+				const targetIndex = triggers.indexOf(target.element);
+
+				if (startIndex === -1 || targetIndex === -1 || startIndex === targetIndex) {
+					return;
+				}
+
+				if (startIndex < targetIndex) {
+					//  s       t
+					// [1] [2] [3]
+					// [2] [1] [3]
+					// [2] [3] [1]
+					for (let i = startIndex; i < targetIndex; i++) {
+						tabs.onSwapTabs(i, i + 1);
+					}
+				} else {
+					//  t       s
+					// [3] [2] [1]
+					// [3] [1] [2]
+					// [1] [3] [2]
+					for (let i = startIndex; i > targetIndex; i--) {
+						tabs.onSwapTabs(i, i - 1);
+					}
+				}
+			},
 		});
 	});
 </script>

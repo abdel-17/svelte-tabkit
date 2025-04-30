@@ -1,14 +1,12 @@
 <script lang="ts" module>
-	import { monitorForElements } from "@atlaskit/pragmatic-drag-and-drop/element/adapter";
 	import { mergeProps } from "@zag-js/svelte";
 	import { DEV } from "esm-env";
 	import { getContext, hasContext, setContext } from "svelte";
 	import { getTabsContext } from "./Tabs.svelte";
-	import { dropTrigger } from "./state.svelte.js";
 	import type { TabsListProps } from "./types.js";
 
 	export type TabsListContext = {
-		ref: () => HTMLDivElement | null;
+		getTriggers: () => Array<Element>;
 	};
 
 	const CONTEXT_KEY = Symbol("TabsList");
@@ -28,17 +26,11 @@
 	let { children, ref = $bindable(null), ...rest }: TabsListProps = $props();
 
 	const context: TabsListContext = {
-		ref: () => ref,
+		getTriggers: () => Array.from(ref!.querySelectorAll("[data-part='trigger']")),
 	};
 	setContext(CONTEXT_KEY, context);
 
 	const listProps = $derived(tabs.api().getListProps());
-
-	$effect(() => {
-		return monitorForElements({
-			onDrop: (payload) => dropTrigger(payload, ref!, tabs.onSwapTabs),
-		});
-	});
 </script>
 
 <div {...mergeProps(listProps, rest)} bind:this={ref}>
