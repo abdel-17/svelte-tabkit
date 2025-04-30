@@ -1,11 +1,12 @@
 <script lang="ts" module>
+	import { isControlOrMeta } from "$lib/internal/helpers.js";
 	import {
 		draggable,
 		dropTargetForElements,
 	} from "@atlaskit/pragmatic-drag-and-drop/element/adapter";
 	import { mergeProps } from "@zag-js/svelte";
 	import { DEV } from "esm-env";
-	import { getContext, hasContext, setContext } from "svelte";
+	import { getContext, hasContext, setContext, tick } from "svelte";
 	import type { EventHandler } from "svelte/elements";
 	import { getTabsContext } from "./Tabs.svelte";
 	import { getTabsListContext } from "./TabsList.svelte";
@@ -44,7 +45,7 @@
 		...rest
 	}: TabsTriggerProps = $props();
 
-	function close() {
+	function close(): void {
 		const triggers = tabsList.getTriggers();
 		const index = triggers.indexOf(ref!);
 		if (index === -1) {
@@ -83,6 +84,72 @@
 				close();
 				break;
 			}
+			case "ArrowLeft":
+			case "ArrowUp": {
+				if (event.key === "ArrowLeft" && tabs.orientation() !== "horizontal") {
+					return;
+				}
+
+				if (event.key === "ArrowUp" && tabs.orientation() !== "vertical") {
+					return;
+				}
+
+				if (!event.shiftKey || !isControlOrMeta(event)) {
+					return;
+				}
+
+				const triggers = tabsList.getTriggers();
+				const index = triggers.indexOf(ref!);
+				if (index === -1) {
+					return;
+				}
+
+				if (index === 0) {
+					if (!tabs.loopFocus()) {
+						return;
+					}
+
+					tabs.onSwapTabs(index, triggers.length - 1);
+				} else {
+					tabs.onSwapTabs(index, index - 1);
+				}
+
+				tick().then(() => ref?.focus());
+				break;
+			}
+			case "ArrowRight":
+			case "ArrowDown": {
+				if (event.key === "ArrowRight" && tabs.orientation() !== "horizontal") {
+					return;
+				}
+
+				if (event.key === "ArrowDown" && tabs.orientation() !== "vertical") {
+					return;
+				}
+
+				if (!event.shiftKey || !isControlOrMeta(event)) {
+					return;
+				}
+
+				const triggers = tabsList.getTriggers();
+				const index = triggers.indexOf(ref!);
+				if (index === -1) {
+					return;
+				}
+
+				if (index === triggers.length - 1) {
+					if (!tabs.loopFocus()) {
+						return;
+					}
+
+					tabs.onSwapTabs(index, 0);
+				} else {
+					tabs.onSwapTabs(index, index + 1);
+				}
+
+				tick().then(() => ref?.focus());
+				break;
+			}
 			default: {
 				return;
 			}
@@ -119,7 +186,6 @@
 				const triggers = tabsList.getTriggers();
 				const startIndex = triggers.indexOf(source.element);
 				const targetIndex = triggers.indexOf(target.element);
-
 				if (startIndex === -1 || targetIndex === -1 || startIndex === targetIndex) {
 					return;
 				}

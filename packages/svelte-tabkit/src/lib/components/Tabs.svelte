@@ -3,11 +3,13 @@
 	import * as tabs from "@zag-js/tabs";
 	import { DEV } from "esm-env";
 	import { getContext, hasContext, setContext } from "svelte";
-	import type { TabsProps } from "./types.js";
+	import type { TabsOrientation, TabsProps } from "./types.js";
 
 	export type TabsContext = {
 		api: () => tabs.Api;
 		value: () => string | undefined;
+		loopFocus: () => boolean;
+		orientation: () => TabsOrientation;
 		onSwapTabs: (i: number, j: number) => void;
 		onCloseTab: (i: number) => void;
 	};
@@ -58,6 +60,8 @@
 	const context: TabsContext = {
 		api: () => api,
 		value: () => value,
+		loopFocus: () => loopFocus,
+		orientation: () => orientation,
 		onSwapTabs: (i, j) => onSwapTabs(i, j),
 		onCloseTab: (i) => onCloseTab(i),
 	};
