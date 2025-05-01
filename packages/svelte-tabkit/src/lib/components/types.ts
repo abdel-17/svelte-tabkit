@@ -132,7 +132,7 @@ export interface TabsTriggerProps extends RefProp<HTMLButtonElement>, HTMLButton
 	onDragStart?: () => void;
 
 	/**
-	 * A callback that is called when this tab stops being dragged.
+	 * A callback that is called when this tab is dropped.
 	 */
-	onDragEnd?: () => void;
+	onDrop?: () => void;
 }

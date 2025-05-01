@@ -20,7 +20,7 @@
 		onClose = noop,
 		onRename = noop,
 		onDragStart = noop,
-		onDragEnd = noop,
+		onDrop = noop,
 		ref = $bindable(null),
 		...rest
 	}: TabsTriggerProps = $props();
@@ -110,9 +110,13 @@
 			element: ref!,
 			getInitialData: () => new TriggerDragData(() => value),
 			canDrag: () => !disabled,
-			onDragStart: () => onDragStart(),
+			onDragStart: () => {
+				tabsContext.onDragStart();
+				onDragStart();
+			},
 			onDrop: ({ source }) => {
-				onDragEnd();
+				tabsContext.onDrop();
+				onDrop();
 				source.element.focus();
 			},
 		});

@@ -11,6 +11,9 @@
 		swapPrevious: (tabValue: string) => void;
 		swapNext: (tabValue: string) => void;
 		reorder: (startValue: string, finishValue: string) => void;
+		onDragStart: () => void;
+		onDragLeaveList: () => void;
+		onDrop: () => void;
 	};
 
 	const [getTabsContext, setTabsContext] = createContext<TabsContext>();
@@ -130,6 +133,22 @@
 		setTabs(newTabs);
 	}
 
+	let snapshot: Array<TTab> | undefined;
+
+	function onDragStart(): void {
+		snapshot = tabs;
+	}
+
+	function onDragLeaveList(): void {
+		if (snapshot !== undefined) {
+			setTabs(snapshot);
+		}
+	}
+
+	function onDrop(): void {
+		snapshot = undefined;
+	}
+
 	setTabsContext({
 		api: () => api,
 		orientation: () => orientation,
@@ -137,6 +156,9 @@
 		swapPrevious,
 		swapNext,
 		reorder,
+		onDragStart,
+		onDragLeaveList,
+		onDrop,
 	});
 
 	const rootProps = $derived(api.getRootProps());

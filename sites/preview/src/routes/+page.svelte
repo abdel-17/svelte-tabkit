@@ -41,7 +41,7 @@
 					onDragStart={() => {
 						tab.dragged = true;
 					}}
-					onDragEnd={() => {
+					onDrop={() => {
 						tab.dragged = false;
 					}}
 					class={[
