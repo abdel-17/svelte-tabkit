@@ -1,78 +1,147 @@
 <script lang="ts" module>
+	import { createContext, noop, swapIndex } from "$lib/internal/helpers.js";
 	import { mergeProps, normalizeProps, useMachine } from "@zag-js/svelte";
-	import * as tabs from "@zag-js/tabs";
-	import { DEV } from "esm-env";
-	import { getContext, hasContext, setContext } from "svelte";
-	import type { TabsOrientation, TabsProps } from "./types.js";
+	import * as zagTabs from "@zag-js/tabs";
+	import type { TabsProps, TabsTab } from "./types.js";
 
 	export type TabsContext = {
-		api: () => tabs.Api;
-		value: () => string | undefined;
-		loopFocus: () => boolean;
-		orientation: () => TabsOrientation;
-		onSwapTabs: (i: number, j: number) => void;
-		onCloseTab: (i: number) => void;
-		onRenameTab: (i: number) => void;
+		api: () => zagTabs.Api;
+		orientation: () => "horizontal" | "vertical";
+		close: (tabValue: string) => void;
+		swapPrevious: (tabValue: string) => void;
+		swapNext: (tabValue: string) => void;
+		reorder: (startValue: string, finishValue: string) => void;
 	};
 
-	const CONTEXT_KEY = Symbol("Tabs");
+	const [getTabsContext, setTabsContext] = createContext<TabsContext>();
 
-	export function getTabsContext(): TabsContext {
-		if (DEV && !hasContext(CONTEXT_KEY)) {
-			throw new Error("No parent <Tabs> found");
-		}
-
-		return getContext(CONTEXT_KEY);
-	}
+	export { getTabsContext };
 </script>
 
-<script lang="ts">
+<script lang="ts" generics="TTab extends TabsTab = TabsTab">
 	let {
 		children,
+		tabs = $bindable(),
+		onTabsChange = noop,
 		value = $bindable(),
-		onValueChange,
-		onFocusChange,
-		onSwapTabs,
-		onCloseTab,
-		onRenameTab,
-		loopFocus = true,
+		onValueChange = noop,
 		orientation = "horizontal",
 		activationMode = "automatic",
-		dir = "ltr",
+		loopFocus = true,
 		ref = $bindable(null),
 		...rest
-	}: TabsProps = $props();
+	}: TabsProps<TTab> = $props();
 
 	const id = $props.id();
-	const service = useMachine(tabs.machine, () => ({
+	const service = useMachine(zagTabs.machine, () => ({
 		id,
 		value,
 		onValueChange: (details) => {
 			value = details.value;
-			onValueChange?.(value);
+			onValueChange(details.value);
 		},
-		onFocusChange: (details) => onFocusChange?.(details.focusedValue),
-		loopFocus,
 		orientation,
 		activationMode,
-		dir,
+		loopFocus,
 	}));
-	const api = $derived(tabs.connect(service, normalizeProps));
+	const api = $derived(zagTabs.connect(service, normalizeProps));
 
-	const context: TabsContext = {
+	function setTabs(newTabs: Array<TTab>): void {
+		tabs = newTabs;
+		onTabsChange(newTabs);
+	}
+
+	function close(tabValue: string): void {
+		const index = tabs.findIndex((tab) => tab.value === tabValue);
+		if (index === -1) {
+			return;
+		}
+
+		const isTabSelected = tabValue === value;
+		if (isTabSelected) {
+			if (index === tabs.length - 1) {
+				api.selectPrev();
+			} else {
+				api.selectNext();
+			}
+		}
+
+		const newTabs = [...tabs];
+		newTabs.splice(index, 1);
+		setTabs(newTabs);
+	}
+
+	function swapPrevious(tabValue: string): void {
+		const index = tabs.findIndex((tab) => tab.value === tabValue);
+		if (index === -1) {
+			return;
+		}
+
+		if (index === 0 && !loopFocus) {
+			return;
+		}
+
+		const newTabs = [...tabs];
+		if (index === 0) {
+			swapIndex(newTabs, index, newTabs.length - 1);
+		} else {
+			swapIndex(newTabs, index, index - 1);
+		}
+		setTabs(newTabs);
+	}
+
+	function swapNext(tabValue: string): void {
+		const index = tabs.findIndex((tab) => tab.value === tabValue);
+		if (index === -1) {
+			return;
+		}
+
+		const lastIndex = tabs.length - 1;
+		if (index === lastIndex && !loopFocus) {
+			return;
+		}
+
+		const newTabs = [...tabs];
+		if (index === lastIndex) {
+			swapIndex(newTabs, index, 0);
+		} else {
+			swapIndex(newTabs, index, index + 1);
+		}
+		setTabs(newTabs);
+	}
+
+	function reorder(startValue: string, finishValue: string): void {
+		const startIndex = tabs.findIndex((tab) => tab.value === startValue);
+		const finishIndex = tabs.findIndex((tab) => tab.value === finishValue);
+		if (startIndex === -1 || finishIndex === -1 || startIndex === finishIndex) {
+			return;
+		}
+
+		const newTabs = [...tabs];
+		if (startIndex < finishIndex) {
+			for (let i = startIndex; i < finishIndex; i++) {
+				swapIndex(newTabs, i, i + 1);
+			}
+		} else {
+			for (let i = startIndex; i > finishIndex; i--) {
+				swapIndex(newTabs, i, i - 1);
+			}
+		}
+		setTabs(newTabs);
+	}
+
+	setTabsContext({
 		api: () => api,
-		value: () => value,
-		loopFocus: () => loopFocus,
 		orientation: () => orientation,
-		onSwapTabs: (i, j) => onSwapTabs?.(i, j),
-		onCloseTab: (i) => onCloseTab?.(i),
-		onRenameTab: (i) => onRenameTab?.(i),
-	};
-	setContext(CONTEXT_KEY, context);
+		close,
+		swapPrevious,
+		swapNext,
+		reorder,
+	});
 
 	const rootProps = $derived(api.getRootProps());
 </script>
 
-<div {...mergeProps(rootProps, rest)} bind:this={ref}>
+<div {...mergeProps(rootProps, rest)} bind:this={ref} class={rest.class}>
 	{@render children()}
 </div>

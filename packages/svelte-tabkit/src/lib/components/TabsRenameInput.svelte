@@ -1,27 +1,25 @@
 <script lang="ts">
+	import { noop } from "$lib/internal/helpers.js";
 	import { mergeProps } from "@zag-js/svelte";
 	import type { EventHandler } from "svelte/elements";
-	import type { TabsTriggerInputProps } from "./types.js";
+	import type { TabsRenameInputProps } from "./types.js";
 
 	let {
-		onConfirm,
-		onCancel,
-		ref,
+		onConfirm = noop,
+		onCancel = noop,
+		ref = $bindable(null),
 		value = $bindable(""),
 		...rest
-	}: TabsTriggerInputProps = $props();
+	}: TabsRenameInputProps = $props();
 
 	const onkeydown: EventHandler<KeyboardEvent, HTMLInputElement> = (event) => {
-		// Prevent the trigger from handling input events from this input element.
-		event.stopPropagation();
-
 		switch (event.key) {
 			case "Enter": {
-				onConfirm?.(event.currentTarget.value);
+				onConfirm(value);
 				break;
 			}
 			case "Escape": {
-				onCancel?.(event.currentTarget.value);
+				onCancel(event.currentTarget.value);
 				break;
 			}
 			default: {
@@ -33,7 +31,7 @@
 	};
 
 	const onblur: EventHandler<FocusEvent, HTMLInputElement> = (event) => {
-		onCancel?.(event?.currentTarget.value);
+		onCancel(event.currentTarget.value);
 	};
 
 	$effect(() => {
@@ -42,4 +40,12 @@
 	});
 </script>
 
-<input {...mergeProps(rest, { onkeydown, onblur })} bind:this={ref} bind:value />
+<input
+	{...mergeProps(rest, {
+		onkeydown,
+		onblur,
+	})}
+	bind:this={ref}
+	bind:value
+	class={rest.class}
+/>

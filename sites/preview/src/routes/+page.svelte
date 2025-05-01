@@ -1,98 +1,63 @@
 <script lang="ts">
-	import { XIcon } from "@lucide/svelte";
-	import {
-		Tabs,
-		TabsContent,
-		TabsList,
-		TabsTrigger,
-		TabsTriggerClose,
-		TabsTriggerInput,
-	} from "svelte-tabkit";
+	import { Tabs, TabsContent, TabsList, TabsTrigger } from "svelte-tabkit";
 
 	class Tab {
-		readonly id = crypto.randomUUID();
+		readonly value: string;
 		name = $state.raw("");
-		ref: HTMLDivElement | null = $state.raw(null);
+		dragged = $state.raw(false);
 
-		constructor(name: string) {
+		constructor({ value, name }: { value: string; name: string }) {
+			this.value = value;
 			this.name = name;
 		}
 	}
 
-	const tabs = $state([new Tab("Tab 1"), new Tab("Tab 2"), new Tab("Tab 3")]);
-	let selectedId: string | undefined = $state.raw(tabs[0].id);
-	let renamedId: string | undefined = $state.raw();
-
-	function onSwapTabs(i: number, j: number): void {
-		const ti = tabs[i];
-		const tj = tabs[j];
-		tabs[i] = tj;
-		tabs[j] = ti;
-	}
-
-	function onCloseTab(i: number): void {
-		tabs.splice(i, 1);
-
-		if (tabs[i].id === renamedId) {
-			renamedId = undefined;
-		}
-	}
-
-	function onRenameTab(i: number): void {
-		renamedId = tabs[i].id;
-	}
-
-	function onConfirmRename(tab: Tab, value: string): void {
-		if (value.length === 0) {
-			return;
-		}
-
-		tab.name = value;
-		tab.ref!.focus();
-		renamedId = undefined;
-	}
-
-	function onCancelRename(): void {
-		renamedId = undefined;
-	}
+	let tabs = $state([
+		new Tab({
+			value: "tab-1",
+			name: "Tab 1",
+		}),
+		new Tab({
+			value: "tab-2",
+			name: "Tab 2",
+		}),
+		new Tab({
+			value: "tab-3",
+			name: "Tab 3",
+		}),
+	]);
+	let value: string | undefined = $state.raw("tab-1");
 </script>
 
 <main class="p-8">
-	<Tabs bind:value={selectedId} {onSwapTabs} {onCloseTab} {onRenameTab}>
+	<Tabs bind:tabs bind:value>
 		<TabsList class="flex items-center gap-1 rounded-t-lg border border-gray-300 bg-gray-300">
-			{#each tabs as tab (tab.id)}
+			{#each tabs as tab (tab.value)}
 				<TabsTrigger
-					bind:ref={tab.ref}
-					value={tab.id}
-					class={({ dragged }) => [
+					value={tab.value}
+					onDragStart={() => {
+						tab.dragged = true;
+					}}
+					onDragEnd={() => {
+						tab.dragged = false;
+					}}
+					class={[
 						"flex min-w-30 items-center justify-between gap-2 rounded-[inherit] px-3 py-2 text-sm font-medium focus-visible:outline-2 focus-visible:outline-current data-selected:bg-gray-100",
 						{
-							"opacity-0": dragged,
+							"opacity-0": tab.dragged,
 						},
 					]}
 				>
-					{#if tab.id === renamedId}
-						<TabsTriggerInput
-							value={tab.name}
-							onConfirm={(value) => onConfirmRename(tab, value)}
-							onCancel={onCancelRename}
-						/>
-					{:else}
-						<span>{tab.name}</span>
-						<TabsTriggerClose class="rounded-full p-0.25 hover:bg-current/8">
-							<span class="sr-only">Close</span>
-							<XIcon size={16} />
-						</TabsTriggerClose>
-					{/if}
+					<span>{tab.name}</span>
 				</TabsTrigger>
 			{/each}
 
 			<div class="my-1 w-px self-stretch rounded-full bg-slate-400"></div>
 		</TabsList>
 
-		{#each tabs as tab (tab.id)}
+		{#each tabs as tab (tab.value)}
 			<TabsContent
-				value={tab.id}
+				value={tab.value}
 				class="rounded-lg rounded-t-none border border-t-0 border-gray-300 p-4 focus-visible:outline-2 focus-visible:outline-current"
 			>
 				Content for {tab.name}

@@ -1,15 +1,33 @@
-import type { HTMLDivAttributes } from "$lib/internal/types.js";
+import type { HTMLDivAttributes, RefProp } from "$lib/internal/types.js";
 import type { Snippet } from "svelte";
-import type { ClassValue, HTMLButtonAttributes, HTMLInputAttributes } from "svelte/elements";
+import type { HTMLButtonAttributes, HTMLInputAttributes } from "svelte/elements";
+
+/**
+ * @property value The value of the tab.
+ */
+export type TabsTab = {
+	value: string;
+};
 
 export type TabsOrientation = "horizontal" | "vertical";
 
 export type TabsActivationMode = "manual" | "automatic";
 
-export type TabsDir = "ltr" | "rtl";
-
-export interface TabsProps extends HTMLDivAttributes {
+export interface TabsProps<TTab extends TabsTab = TabsTab>
+	extends RefProp<HTMLDivElement>,
+		HTMLDivAttributes {
 	children: Snippet;
+
+	/**
+	 * The tabs displayed in the list.
+	 */
+	tabs: Array<TTab>;
+
+	/**
+	 * A callback that is called when the order of the tabs changes.
+	 * @param value The new value of the tabs.
+	 */
+	onTabsChange?: (value: Array<TTab>) => void;
 
 	/**
 	 * The value of the selected tab.
@@ -18,34 +36,29 @@ export interface TabsProps extends HTMLDivAttributes {
 
 	/**
 	 * A callback that is called when the selected tab changes.
-	 * @param value - The value of the selected tab.
+	 * @param value The value of the new selected tab.
 	 */
 	onValueChange?: (value: string) => void;
 
 	/**
-	 * A callback that is called when the focused tab changes.
-	 * @param value - The value of the focused tab.
+	 * The orientation of the tabs. Can be `horizontal` or `vertical`.
+	 *
+	 * - `horizontal`: Only left and right arrow key navigation will work.
+	 * - `vertical`: Only up and down arrow key navigation will work.
+	 *
+	 * @default "horizontal"
 	 */
-	onFocusChange?: (value: string) => void;
+	orientation?: TabsOrientation;
 
 	/**
-	 * A callback that is called when two adjacent tabs are swapped.
-	 * @param i - The index of the first tab.
-	 * @param j - The index of the second tab.
+	 * The activation mode of the tabs. Can be `manual` or `automatic`.
+	 *
+	 * - `manual`: Tabs are activated when clicked or press `Enter` key.
+	 * - `automatic`: Tabs are activated when receiving focus.
+	 *
+	 * @default "automatic"
 	 */
-	onSwapTabs?: (i: number, j: number) => void;
-
-	/**
-	 * A callback that is called when a tab is closed.
-	 * @param i - The index of the closed tab.
-	 */
-	onCloseTab?: (i: number) => void;
-
-	/**
-	 * A callback that is called when a tab is renamed.
-	 * @param i - The index of the renamed tab.
-	 */
-	onRenameTab?: (i: number) => void;
+	activationMode?: TabsActivationMode;
 
 	/**
 	 * Whether the keyboard navigation will loop from last tab to first,
@@ -54,136 +67,72 @@ export interface TabsProps extends HTMLDivAttributes {
 	 * @default true
 	 */
 	loopFocus?: boolean;
-
-	/**
-	 * The orientation of the tabs.
-	 *
-	 * - `horizontal`: only left and right arrow key navigation will work.
-	 * - `vertical`: only up and down arrow key navigation will work.
-	 *
-	 * @default "horizontal"
-	 */
-	orientation?: TabsOrientation;
-
-	/**
-	 * The activation mode of the tabs.
-	 *
-	 * - `manual`: Tabs are activated when clicked or press `enter` key.
-	 * - `automatic`: Tabs are activated when receiving focus.
-	 *
-	 * @default "automatic"
-	 */
-	activationMode?: TabsActivationMode;
-
-	/**
-	 * The document's text/writing direction.
-	 *
-	 * @default "ltr"
-	 */
-	dir?: TabsDir;
-
-	/**
-	 * The rendered element.
-	 */
-	ref?: HTMLDivElement | null;
 }
 
-export interface TabsContentProps extends HTMLDivAttributes {
+export interface TabsContentProps extends RefProp<HTMLDivElement>, HTMLDivAttributes {
 	children: Snippet;
 
 	/**
-	 * The value of the shown tab.
+	 * The value of the tab this content represents.
+	 */
+	value: string;
+}
+
+export interface TabsListProps extends RefProp<HTMLDivElement>, HTMLDivAttributes {
+	children: Snippet;
+}
+
+export interface TabsRenameInputProps
+	extends RefProp<HTMLInputElement>,
+		Omit<HTMLInputAttributes, "children"> {
+	/**
+	 * A callback that is called when the user confirms renaming the tab.
+	 * @param value The current value of the input.
+	 */
+	onConfirm?: (value: string) => void;
+
+	/**
+	 * A callback that is called when the user cancels renaming the tab.
+	 * @param value The current value of the input.
+	 */
+	onCancel?: (value: string) => void;
+}
+
+export interface TabsTriggerProps extends RefProp<HTMLButtonElement>, HTMLButtonAttributes {
+	children: Snippet;
+
+	/**
+	 * The value of the tab this trigger represents.
 	 */
 	value: string;
 
 	/**
-	 * The rendered element.
-	 */
-	ref?: HTMLDivElement | null;
-}
-
-export interface TabsIndicatorProps extends HTMLDivAttributes {
-	/**
-	 * The rendered element.
-	 */
-	ref?: HTMLDivElement | null;
-}
-
-export interface TabsListProps extends HTMLDivAttributes {
-	children: Snippet;
-
-	/**
-	 * The rendered element.
-	 */
-	ref?: HTMLDivElement | null;
-}
-
-/**
- * @property dragged - Whether the current tab is being dragged.
- */
-export type TabsTriggerState = {
-	dragged: boolean;
-};
-
-export interface TabsTriggerProps extends Omit<HTMLDivAttributes, "children" | "class" | "style"> {
-	children: Snippet<[state: TabsTriggerState]>;
-
-	/**
-	 * The value of the triggered tab.
-	 */
-	value: string;
-
-	/**
-	 * Whether the trigger is disabled.
+	 * Whether this tab is disabled.
 	 *
 	 * @default false
 	 */
 	disabled?: boolean;
 
 	/**
-	 * The rendered element.
-	 */
-	ref?: HTMLDivElement | null;
-
-	/**
-	 * The CSS class for the element.
+	 * A callback that is called when this tab is closed.
 	 *
-	 * A function may be provided to compute the class based on component state.
+	 * You can call `event.preventDefault()` to prevent the tab
+	 * from being closed.
 	 */
-	class?: ClassValue | ((state: TabsTriggerState) => ClassValue | undefined);
+	onClose?: (event: Event) => void;
 
 	/**
-	 * The inline style for the element.
-	 *
-	 * A function may be provided to compute the style based on component state.
+	 * A callback that is called when this tab is renamed.
 	 */
-	style?: string | ((state: TabsTriggerState) => string | undefined);
-}
-
-export interface TabsTriggerCloseProps extends HTMLButtonAttributes {
-	children: Snippet;
+	onRename?: () => void;
 
 	/**
-	 * The rendered element.
+	 * A callback that is called when this tab starts being dragged.
 	 */
-	ref?: HTMLButtonElement | null;
-}
-
-export interface TabsTriggerInputProps extends Omit<HTMLInputAttributes, "children"> {
-	/**
-	 * A callback that is called when the user confirms renaming the tab.
-	 * @param value - The current value of the input.
-	 */
-	onConfirm?: (value: string) => void;
+	onDragStart?: () => void;
 
 	/**
-	 * A callback that is called when the user cancels renaming the tab.
-	 * @param value - The current value of the input.
+	 * A callback that is called when this tab stops being dragged.
 	 */
-	onCancel?: (value: string) => void;
-
-	/**
-	 * The rendered element.
-	 */
-	ref?: HTMLInputElement | null;
+	onDragEnd?: () => void;
 }
