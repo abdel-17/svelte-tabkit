@@ -27,7 +27,11 @@
 
 	const triggerProps = $derived(tabsContext.api().getTriggerProps({ value, disabled }));
 
-	function close(): void {
+	/**
+	 * Closes the current tab, unless `event.preventDefault()` is called
+	 * in the `onClose` event handler.
+	 */
+	export function close(): void {
 		const event = new CustomEvent("close", { cancelable: true });
 		onClose(event);
 

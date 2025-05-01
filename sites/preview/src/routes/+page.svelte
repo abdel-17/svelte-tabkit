@@ -1,10 +1,12 @@
 <script lang="ts">
+	import { XIcon } from "@lucide/svelte";
 	import { Tabs, TabsContent, TabsList, TabsTrigger } from "svelte-tabkit";
 
 	class Tab {
 		readonly value: string;
 		name = $state.raw("");
 		dragged = $state.raw(false);
+		trigger: TabsTrigger | null = $state.raw(null);
 
 		constructor({ value, name }: { value: string; name: string }) {
 			this.value = value;
@@ -34,6 +36,7 @@
 		<TabsList class="flex items-center gap-1 rounded-t-lg border border-gray-300 bg-gray-300">
 			{#each tabs as tab (tab.value)}
 				<TabsTrigger
+					bind:this={tab.trigger}
 					value={tab.value}
 					onDragStart={() => {
 						tab.dragged = true;
@@ -49,6 +52,15 @@
 					]}
 				>
 					<span>{tab.name}</span>
+					<XIcon
+						role="presentation"
+						size={16}
+						class="rounded-full hover:bg-current/10 active:bg-current/15"
+						onclick={(event) => {
+							event.preventDefault();
+							tab.trigger!.close();
+						}}
+					/>
 				</TabsTrigger>
 			{/each}
 
